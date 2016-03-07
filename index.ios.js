@@ -8,6 +8,7 @@ import React, {
   View
 } from 'react-native';
 var RootPage = require('./RootPage');
+var LoginPage = require('./LoginPage');
 
 var styles = StyleSheet.create({
   text: {
@@ -28,7 +29,8 @@ class TalkingStickClient extends Component {
         style={styles.container}
         initialRoute={{
           title: 'Talking Stick',
-          component: RootPage,
+          // component: RootPage,
+          component: LoginPage,
         }}/>
     );
   }
