@@ -10,6 +10,9 @@
 #import "AppDelegate.h"
 
 #import "RCTRootView.h"
+#import <Fabric/Fabric.h>
+#import <DigitsKit/DigitsKit.h>
+
 
 @implementation AppDelegate
 
@@ -51,6 +54,8 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+
+  [Fabric with:@[[Digits class]]];
   return YES;
 }
 
