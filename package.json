@@ -7,6 +7,6 @@
   },
   "dependencies": {
     "react-native": "^0.21.0",
-    "react-native-fabric-digits": "^1.0.7"
+    "react-native-fabric-digits": "^1.0.9"
   }
 }
