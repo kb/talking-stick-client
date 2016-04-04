@@ -1,80 +1,65 @@
+'use strict';
+
 import { Socket } from './phoenix'
 
-const TIMEOUT = 10000
-const URL = 'http://localhost:4000/socket'
+export default class MeetingClient {
+  constructor(user, meetingName, updateReceivedFn) {
+    const URL = 'http://localhost:4000/socket';
 
-export default (user, meetingName, updateReceivedFn) => {
-  // construct a socket
-  const socket = new Socket(URL)
+    this.user = user;
+    this.meetingName = meetingName;
+    this.updateReceivedFn = updateReceivedFn;
 
-  // configure the event handlers
-  socket.onOpen(event => console.log('Connected.'))
-  socket.onError(event => console.log('Cannot connect.'))
-  socket.onClose(event => console.log('Goodbye.'))
+    // construct a socket
+    this.socket = new Socket(URL);
 
-  // open a connection to the server
-  socket.connect()
+    // configure the event handlers
+    this.socket.onOpen(event => console.log('Connected.'));
+    this.socket.onError(event => console.log('Cannot connect.'));
+    this.socket.onClose(event => console.log('Goodbye.'));
 
-  // configure a channel into a room - https://www.youtube.com/watch?v=vWFX4ylV_ko
-  const channelName = `meetings:${meetingName}`
-  const channel = socket.channel(channelName, {});
+    // open a connection to the server
+    this.socket.connect();
 
-  // join the channel and listen for admittance
-  // chan.join()
-  //   .receive('ignore', () => console.log('Access denied.'))
-  //   .receive('ok', () => console.log('Access granted.'))
-  //   .receive('timeout', () => console.log('Must be a MongoDB.'))
+    // configure a channel into a room - https://www.youtube.com/watch?v=vWFX4ylV_ko
+    const channelName = `meetings:${meetingName}`;
+    this.channel = this.socket.channel(channelName, {});
 
-  channel.join()
-    .receive("ok", resp => {
-      console.log("Joined successfully", resp)
-      let meeting = JSON.stringify({
-        meeting_id: meetingName
+    // join the channel
+    this.channel.join()
+      .receive("ok", resp => {
+        console.log("Joined successfully", resp)
+        let meeting = JSON.stringify({
+          meeting_id: meetingName
+        })
+        this.channel.push("sync", meeting)
       })
-      channel.push("sync", meeting)
-    })
-    .receive("error", resp => { console.log("Unable to join", resp) })
+      .receive("error", resp => { console.log("Unable to join", resp) })
+      .receive('timeout', () => console.log('Join Timeout'));
 
-  // add some channel-level event handlers
-  channel.onError(event => console.log('Channel blew up.'))
-  channel.onClose(event => console.log('Channel closed.'))
+      // add some channel-level event handlers
+      this.channel.onError(event => console.log('Channel blew up.'));
+      this.channel.onClose(event => console.log('Channel closed.'));
 
-  channel.on("meeting", payload => {
-    console.log(payload)
+      this.channel.on("meeting", payload => {
+        console.log(payload);
+      });
+  }
 
-    // moderator.text(`${JSON.stringify(payload.meeting.moderator)}`)
-    // speaker.text(`${JSON.stringify(payload.meeting.speaker)}`)
-    // queue.text(`${JSON.stringify(payload.meeting.queue)}`)
-  })
+  close() {
+    this.socket.disconnect()
+  }
 
-  // when we receive a new chat message, just trigger the appropriate callback
-  // chan.on('new:msg', msg => onChat && onChat(msg))
-
-  // you can can listen to multiple types
-  // chan.on('user:entered', msg => console.log('say hello to ', msg))
-
-  // a function to shut it all down
-  const close = () => socket.disconnect()
-
-  // a function to send a message
-  const requestStick = () => {
+  requestStick() {
     const data = {
       user: {
-        id: user.id,
-        name: user.name
+        id: this.user.id,
+        name: this.user.name
       },
-      meeting_id: meetingName,
+      meeting_id: this.meetingName,
     };
-    channel.push('request_stick', JSON.stringify(data));
-  };
-
-  // const send = (message) => {
-  //   chan.push('new:msg', {body: message, user}, TIMEOUT)
-  //     .receive('ok', (msg) => console.log('sent'))
-  //     .receive('error', (reasons) => console.log('flop', reasons))
-  //     .receive('timeout', () => console.log('slow much?'))
-  // }
-
-  // reveal a couple ways to drive this bus
-  return { close, requestStick }
+    this.channel.push('request_stick', JSON.stringify(data))
+      .receive('ok', (msg) => console.log('Request Stick Sent'))
+      .receive('error', (reasons) => console.log('Request Stick Error', reasons));
+  }
 }

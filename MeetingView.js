@@ -37,7 +37,7 @@ export default class MeetingView extends Component {
   constructor(props) {
     super(props);
     console.log("MeetingView Props " + JSON.stringify(props));
-    this.meeting = MeetingClient(props.user, props.meeting, this.receiveMeetingUpdate);
+    this.meeting = new MeetingClient(props.user, props.meeting, this.receiveMeetingUpdate);
   }
 
   // fires when we receive a message
