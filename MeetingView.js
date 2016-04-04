@@ -8,6 +8,8 @@ import React, {
   View,
 } from 'react-native';
 
+import MeetingClient from './MeetingClient'
+
 const styles =  StyleSheet.create({
   container: {
     flex: 1,
@@ -32,13 +34,28 @@ const styles =  StyleSheet.create({
 });
 
 export default class MeetingView extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    console.log("MeetingView Props " + JSON.stringify(props));
+    this.meeting = MeetingClient(props.user, props.meeting, this.receiveMeetingUpdate);
+  }
+
+  // fires when we receive a message
+  receiveMeetingUpdate(message) {
+    // console.log("receiveMeetingUpdate " + JSON.stringify(message));
+  }
+
+  whenNextButtonPressed() {
+    this.meeting.requestStick();
   }
 
   render() {
     return <View style={styles.container}>
-      <Text style={styles.title}>Hey this is the meeting!</Text>
+      <Text style={styles.title}>Hey! This is the meeting!</Text>
+
+      <TouchableHighlight style={styles.nextButton} onPress={this.whenNextButtonPressed.bind(this)}>
+        <Text >Next</Text>
+      </TouchableHighlight>
     </View>
   }
 }

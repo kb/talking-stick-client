@@ -34,10 +34,17 @@ export default class BootstrapView extends React.Component {
           id: session.userId,
         };
         
-        AsyncStorage.getItem('userName', (error, userName) => {
+        AsyncStorage.multiGet(['userName', 'meeting'], (error, results) => {
           if (!error) {
-            console.log('Found user name', userName);
-            newState.user.name = userName;
+            results.forEach((kvpair) => {
+              const [k, v] = kvpair;
+              if (k == 'userName') {
+                console.log('Found user name', v);
+                newState.user.name = v;
+              } else if (k == 'meeting') {
+                newState.meeting = v;
+              }
+            });
           }
           
           this.setState(newState);
@@ -60,10 +67,9 @@ export default class BootstrapView extends React.Component {
   
   updateMeetingName(newMeetingName) {
     console.log('Updating Meeting Name to', newMeetingName);
-    AsyncStorage.setItem('meetingName', newMeetingName, (error) => {
+    AsyncStorage.setItem('meeting', newMeetingName, (error) => {
       if (!error) {
-        console.log('Updated meeting name, setting state', _.extend(this.state, {meeting: newMeetingName}));
-        this.setState({meeting: _.extend(this.state, {meeting: newMeetingName})});
+        this.setState({meeting: newMeetingName});
       }
     });
   }
@@ -93,6 +99,8 @@ export default class BootstrapView extends React.Component {
             name: 'Meeting View',
             component: MeetingView,
             props: {
+              user: this.state.user,
+              meeting: this.state.meeting,
             },
           };
         } else {
