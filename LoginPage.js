@@ -8,11 +8,12 @@ var DigitsManager = require("react-native").NativeModules.DigitsManager;
 
 var {
   AppRegistry,
+  AsyncStorage,
   Component,
   StyleSheet,
   Text,
+  TouchableHighlight,
   View,
-  TouchableHighlight
 } = React;
 
 var styles = StyleSheet.create({
@@ -47,11 +48,26 @@ class LoginPage extends Component {
     };
   }
 
-  componentDidMount() {
+  updateFromSession() {
     DigitsManager.session((session) => {
       console.log(session)
-      this.setState({logged: !!session});
+      this.setState({
+        logged: !!session,
+        userId: session ? session.userId : null,
+      });
     });
+  }
+
+  componentWillMount() {
+    AsyncStorage.getItem('userName', (error, userName) => {
+      if (!error) {
+        this.setState({userName});
+      }
+    });
+  }
+
+  componentDidMount() {
+    this.updateFromSession();
   }
 
   completion(error, response) {
@@ -63,6 +79,10 @@ class LoginPage extends Component {
       console.log(response);
 
       this.setState({ logged: logged, error: false, response: response });
+      // The native bridge should return the userId in the completion response
+      // but for now we're fetching it from the Digits session ourselves
+      // to avoid having to mess with the bridge further.
+      this.updateFromSession();
     }
   }
 
@@ -70,17 +90,17 @@ class LoginPage extends Component {
     return (
       <View style={styles.container}>
         {this.state.error ? <Text>An error occured.</Text> : null}
-        {this.state.logged ? this.renderLoggedIn() : this.renderLoginScreen()}
+        {this.state.logged ? this.renderHomeScreen() : this.renderLoginScreen()}
       </View>
     );
   }
 
-  renderLoggedIn() {
+  // User is authenticated
+  renderHomeScreen() {
     return (
       <View>
       <Text>
-      Auth Token: {this.state.response.authToken}{'\n'}
-      Auth Token Secret: {this.state.response.authTokenSecret}{'\n\n'}
+        TALKING STICK
       </Text>
       <DigitsLogoutButton
       completion={this.completion.bind(this)}
@@ -90,6 +110,7 @@ class LoginPage extends Component {
       </View>
     );
   }
+
   renderLoginScreen() {
     return (
       <DigitsLoginButton
