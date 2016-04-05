@@ -4,8 +4,6 @@ import { Socket } from './phoenix'
 
 export default class MeetingClient {
   constructor(user, meetingName, receiveMeetingUpdateCallback) {
-    const URL = 'http://localhost:4000/socket';
-
     // construct the meeting payload for channel push actions
     this.requestPayload = JSON.stringify({
       user: {
@@ -16,7 +14,7 @@ export default class MeetingClient {
     });
 
     // construct a socket
-    this.socket = new Socket(URL);
+    this.socket = new Socket("http://localhost:4000/socket")
 
     // configure the event handlers
     this.socket.onOpen(event => console.log('Connected.'));
@@ -30,6 +28,11 @@ export default class MeetingClient {
     const channelName = `meetings:${meetingName}`;
     this.channel = this.socket.channel(channelName, {});
 
+    // listen for server messages on the 'meeting' channel
+    this.channel.on("meeting", payload => {
+      receiveMeetingUpdateCallback(payload);
+    });
+
     // join the channel
     this.channel.join()
     .receive("ok", resp => {
@@ -39,16 +42,13 @@ export default class MeetingClient {
       })
       this.channel.push("sync", meeting)
     })
-    .receive("error", resp => { console.log('Unable to join', resp) })
-    .receive('timeout', () => console.log('Join Timeout'));
+    .receive("error", resp => { console.log('Unable to join', resp) });
+
+
 
     // add some channel-level event handlers
     this.channel.onError(event => console.log('Channel error'));
     this.channel.onClose(event => console.log('Channel closed'));
-
-    this.channel.on("meeting", payload => {
-      receiveMeetingUpdateCallback(payload);
-    });
   }
 
   close() {
@@ -57,27 +57,27 @@ export default class MeetingClient {
 
   // user Actions
   requestStick() {
-    this.channel.push('request_stick', this.requestPayload)
+    this.channel.push('request_stick', this.requestPayload);
   }
 
   unrequestStick() {
-    channel.push("unrequest_stick", this.requestPayload)
+    channel.push("unrequest_stick", this.requestPayload);
   }
 
   relinquishStick() {
-    channel.push("relinquish_stick", this.requestPayload)
+    channel.push("relinquish_stick", this.requestPayload);
   }
 
   // moderator Actions
   becomeModerator() {
-    channel.push("become_moderator", this.requestPayload)
+    channel.push("become_moderator", this.requestPayload);
   }
 
   relinquishModerator() {
-    channel.push("relinquish_moderator", this.requestPayload)
+    channel.push("relinquish_moderator", this.requestPayload);
   }
 
   resetSpeakerAndQueue() {
-    channel.push("reset_speaker_and_queue", this.requestPayload)
+    channel.push("reset_speaker_and_queue", this.requestPayload);
   }
 }
