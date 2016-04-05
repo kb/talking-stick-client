@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import React, {
   AsyncStorage,
   Component,
@@ -5,6 +7,7 @@ import React, {
   Text,
   TextInput,
   TouchableHighlight,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 
@@ -37,25 +40,50 @@ export default class MeetingView extends Component {
   constructor(props) {
     super(props);
     console.log("MeetingView Props " + JSON.stringify(props));
-    this.meeting = new MeetingClient(props.user, props.meeting, this.receiveMeetingUpdate);
+    this.meetingClient = new MeetingClient(props.user, props.meeting, this.receiveMeetingUpdate.bind(this));
+    this.state = {
+      meeting: null,
+    };
   }
 
   // fires when we receive a message
-  receiveMeetingUpdate(message) {
-    console.log("receiveMeetingUpdate " + JSON.stringify(message));
+  receiveMeetingUpdate(payload) {
+    console.log("receiveMeetingUpdate " + JSON.stringify(payload));
+    this.setState({meeting: payload.meeting});
   }
 
   whenNextButtonPressed() {
-    this.meeting.requestStick();
+    this.meetingClient.requestStick();
+  }
+
+  whenViewTapped() {
+      const now = new Date().getTime();
+      if (this.lastTapTime) {
+        if (now - this.lastTapTime <= 200) {
+          this.userAction();
+        }
+      }
+      this.lastTapTime = now;
+  }
+
+  userAction() {
+    const meeting = this.state.meeting;
+    if (meeting) {
+      if (_.find(meeting.queue, (u) => u.id === this.props.user.id)) {
+        this.meetingClient.unrequestStick();
+      } else if (!meeting.speaker || meeting.speaker.id !== this.props.user.id) {
+        this.meetingClient.requestStick();
+      } else if (meeting.speaker && meeting.speaker.id === this.props.user.id) {
+        this.meetingClient.relinquishStick();
+      }
+    }
   }
 
   render() {
-    return <View style={styles.container}>
-      <Text style={styles.title}>Hey! This is the meeting!</Text>
-
-      <TouchableHighlight style={styles.nextButton} onPress={this.whenNextButtonPressed.bind(this)}>
-        <Text >Next</Text>
-      </TouchableHighlight>
-    </View>
+    return <TouchableWithoutFeedback onPress={this.whenViewTapped.bind(this)}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Hey! This is the meeting!</Text>
+      </View>
+    </TouchableWithoutFeedback>
   }
 }
