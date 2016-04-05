@@ -42,7 +42,7 @@ export default class MeetingView extends Component {
 
   // fires when we receive a message
   receiveMeetingUpdate(message) {
-    // console.log("receiveMeetingUpdate " + JSON.stringify(message));
+    console.log("receiveMeetingUpdate " + JSON.stringify(message));
   }
 
   whenNextButtonPressed() {

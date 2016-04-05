@@ -3,12 +3,17 @@
 import { Socket } from './phoenix'
 
 export default class MeetingClient {
-  constructor(user, meetingName, updateReceivedFn) {
+  constructor(user, meetingName, receiveMeetingUpdateCallback) {
     const URL = 'http://localhost:4000/socket';
 
-    this.user = user;
-    this.meetingName = meetingName;
-    this.updateReceivedFn = updateReceivedFn;
+    // construct the meeting payload for channel push actions
+    this.requestPayload = JSON.stringify({
+      user: {
+        id: user.id,
+        name: user.name
+      },
+      meeting_id: meetingName,
+    });
 
     // construct a socket
     this.socket = new Socket(URL);
@@ -21,45 +26,58 @@ export default class MeetingClient {
     // open a connection to the server
     this.socket.connect();
 
-    // configure a channel into a room - https://www.youtube.com/watch?v=vWFX4ylV_ko
+    // configure a channel for the meeting
     const channelName = `meetings:${meetingName}`;
     this.channel = this.socket.channel(channelName, {});
 
     // join the channel
     this.channel.join()
-      .receive("ok", resp => {
-        console.log("Joined successfully", resp)
-        let meeting = JSON.stringify({
-          meeting_id: meetingName
-        })
-        this.channel.push("sync", meeting)
+    .receive("ok", resp => {
+      console.log('Joined successfully', resp)
+      let meeting = JSON.stringify({
+        meeting_id: meetingName
       })
-      .receive("error", resp => { console.log("Unable to join", resp) })
-      .receive('timeout', () => console.log('Join Timeout'));
+      this.channel.push("sync", meeting)
+    })
+    .receive("error", resp => { console.log('Unable to join', resp) })
+    .receive('timeout', () => console.log('Join Timeout'));
 
-      // add some channel-level event handlers
-      this.channel.onError(event => console.log('Channel blew up.'));
-      this.channel.onClose(event => console.log('Channel closed.'));
+    // add some channel-level event handlers
+    this.channel.onError(event => console.log('Channel error'));
+    this.channel.onClose(event => console.log('Channel closed'));
 
-      this.channel.on("meeting", payload => {
-        console.log(payload);
-      });
+    this.channel.on("meeting", payload => {
+      receiveMeetingUpdateCallback(payload);
+    });
   }
 
   close() {
     this.socket.disconnect()
   }
 
+  // user Actions
   requestStick() {
-    const data = {
-      user: {
-        id: this.user.id,
-        name: this.user.name
-      },
-      meeting_id: this.meetingName,
-    };
-    this.channel.push('request_stick', JSON.stringify(data))
-      .receive('ok', (msg) => console.log('Request Stick Sent'))
-      .receive('error', (reasons) => console.log('Request Stick Error', reasons));
+    this.channel.push('request_stick', this.requestPayload)
+  }
+
+  unrequestStick() {
+    channel.push("unrequest_stick", this.requestPayload)
+  }
+
+  relinquishStick() {
+    channel.push("relinquish_stick", this.requestPayload)
+  }
+
+  // moderator Actions
+  becomeModerator() {
+    channel.push("become_moderator", this.requestPayload)
+  }
+
+  relinquishModerator() {
+    channel.push("relinquish_moderator", this.requestPayload)
+  }
+
+  resetSpeakerAndQueue() {
+    channel.push("reset_speaker_and_queue", this.requestPayload)
   }
 }
