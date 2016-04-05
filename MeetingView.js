@@ -80,10 +80,47 @@ export default class MeetingView extends Component {
   }
 
   render() {
+    if (!this.state.meeting) {
+      return <View>
+        <Text style={styles.title}>Loading</Text>
+      </View>;
+    }
+
     return <TouchableWithoutFeedback onPress={this.whenViewTapped.bind(this)}>
       <View style={styles.container}>
-        <Text style={styles.title}>Hey! This is the meeting!</Text>
+        <Text style={styles.title}>{this.props.meeting}</Text>
+        {this.maybeRenderCurrentSpeaker()}
+        {this.maybeRenderNextSpeaker()}
+        {this.maybeRenderQueuePosition()}
       </View>
     </TouchableWithoutFeedback>
+  }
+
+  maybeRenderCurrentSpeaker() {
+    const currentSpeaker = this.state.meeting.speaker;
+    if (!currentSpeaker) {
+      return undefined;
+    }
+
+    return <Text>Speaker: {currentSpeaker.name}</Text>;
+  }
+
+  maybeRenderNextSpeaker() {
+    const nextSpeaker = _.first(this.state.meeting.queue);
+    if (!nextSpeaker) {
+      return undefined;
+    }
+
+    return <Text>Next Speaker: {nextSpeaker.name}</Text>;
+  }
+
+
+  maybeRenderQueuePosition() {
+    const queueIndex = _.findIndex(this.state.meeting.queue, (u) => u.id === this.props.user.id);
+    if (queueIndex < 1) {
+      return undefined;
+    }
+
+    return <Text>There are {queueIndex} speakers ahead of you</Text>;
   }
 }
