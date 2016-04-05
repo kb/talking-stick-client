@@ -57,27 +57,33 @@ export default class MeetingClient {
 
   // user Actions
   requestStick() {
+    console.log("requestStick");
     this.channel.push('request_stick', this.requestPayload);
   }
 
   unrequestStick() {
-    channel.push("unrequest_stick", this.requestPayload);
+    console.log("unrequestStick");
+    this.channel.push("unrequest_stick", this.requestPayload);
   }
 
   relinquishStick() {
-    channel.push("relinquish_stick", this.requestPayload);
+    console.log("relinquishStick");
+    this.channel.push("relinquish_stick", this.requestPayload);
   }
 
   // moderator Actions
   becomeModerator() {
-    channel.push("become_moderator", this.requestPayload);
+    console.log("becomeModerator");
+    this.channel.push("become_moderator", this.requestPayload);
   }
 
   relinquishModerator() {
-    channel.push("relinquish_moderator", this.requestPayload);
+    console.log("relinquishModerator");
+    this.channel.push("relinquish_moderator", this.requestPayload);
   }
 
   resetSpeakerAndQueue() {
-    channel.push("reset_speaker_and_queue", this.requestPayload);
+    console.log("resetSpeakerAndQueue");
+    this.channel.push("reset_speaker_and_queue", this.requestPayload);
   }
 }
