@@ -1,4 +1,3 @@
-import {NativeAppEventEmitter} from 'react-native';
 import RNCalendarEvents from 'react-native-calendar-events';
 import moment from 'moment';
 
@@ -23,8 +22,8 @@ export default class Calendar {
         return {
           title: event.title,
           id: event.id,
-          startDate: moment(event.startDate, this.dateFormat).toDate(),
-          endDate: moment(event.endDate, this.dateFormat).toDate(),
+          startTimeMs: moment(event.startDate, this.dateFormat).valueOf(),
+          endTimeMs: moment(event.endDate, this.dateFormat).valueOf(),
         };
       });
       callback(events);

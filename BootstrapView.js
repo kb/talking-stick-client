@@ -52,6 +52,7 @@ export default class BootstrapView extends React.Component {
           }
 
           this.calendar.events((events) => {
+            // TODO filter out events that have already elapsed, or been declined
             newState.events = events;
             this.setState(newState);
           });
