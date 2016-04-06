@@ -24,8 +24,7 @@ const styles =  StyleSheet.create({
     fontSize: 24,
   },
   backButton: {
-    paddingTop: 25,
-    paddingLeft: 10,
+    padding: 15,
   },
 });
 
@@ -50,13 +49,14 @@ export default class MeetingView extends Component {
   }
 
   whenViewTapped() {
-      const now = new Date().getTime();
-      if (this.lastTapTime) {
-        if (now - this.lastTapTime <= 200) {
-          this.userAction();
-        }
+    console.log('VIEW TAPPED');
+    const now = new Date().getTime();
+    if (this.lastTapTime) {
+      if (now - this.lastTapTime <= 200) {
+        this.userAction();
       }
-      this.lastTapTime = now;
+    }
+    this.lastTapTime = now;
   }
 
   userAction() {
@@ -79,21 +79,19 @@ export default class MeetingView extends Component {
       </View>;
     }
 
-    return <View>
-      <TouchableHighlight style={styles.backButton} onPress={this.whenBackButtonPressed.bind(this)}>
-        <Text>
-          Back
-        </Text>
-      </TouchableHighlight>
-      <TouchableWithoutFeedback onPress={this.whenViewTapped.bind(this)}>
-        <View style={styles.container}>
-          <Text style={styles.title}>{this.props.meeting}</Text>
-          {this.maybeRenderCurrentSpeaker()}
-          {this.maybeRenderNextSpeaker()}
-          {this.maybeRenderQueuePosition()}
-        </View>
-      </TouchableWithoutFeedback>
-    </View>
+    return <TouchableWithoutFeedback onPress={this.whenViewTapped.bind(this)}>
+      <View style={styles.container}>
+        <TouchableHighlight style={styles.backButton} onPress={this.whenBackButtonPressed.bind(this)}>
+          <Text>
+            Back
+          </Text>
+        </TouchableHighlight>
+        <Text style={styles.title}>{this.props.meeting}</Text>
+        {this.maybeRenderCurrentSpeaker()}
+        {this.maybeRenderNextSpeaker()}
+        {this.maybeRenderQueuePosition()}
+      </View>
+    </TouchableWithoutFeedback>
   }
 
   maybeRenderCurrentSpeaker() {
