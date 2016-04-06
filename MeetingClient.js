@@ -14,7 +14,7 @@ export default class MeetingClient {
     });
 
     // construct a socket
-    this.socket = new Socket("http://localhost:4000/socket")
+    this.socket = new Socket("wss://talking-stick-service.herokuapp.com/socket")
 
     // configure the event handlers
     this.socket.onOpen(event => console.log('Connected.'));
