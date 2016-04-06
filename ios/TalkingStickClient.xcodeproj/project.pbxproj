@@ -27,6 +27,8 @@
 		27F22CE11C8D1D93006E903A /* TwitterCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27F22CDD1C8D1D93006E903A /* TwitterCore.framework */; };
 		27F22CE81C8DAA9C006E903A /* libRCTDigitsManager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 27F22CE71C8DAA5A006E903A /* libRCTDigitsManager.a */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
+		B17F215C1CB57C9F00E44D02 /* libRNCalendarEvents.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B17F215B1CB57C9600E44D02 /* libRNCalendarEvents.a */; };
+		B187085B1CB56819008FAACD /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B187085A1CB56819008FAACD /* EventKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -114,6 +116,13 @@
 			remoteGlobalIDString = 58B5119B1A9E6C1200147676;
 			remoteInfo = RCTText;
 		};
+		B17F215A1CB57C9600E44D02 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B17F21561CB57C9600E44D02 /* RNCalendarEvents.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BEC43C6A1C723089001221C6;
+			remoteInfo = RNCalendarEvents;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -143,6 +152,8 @@
 		27F22CE21C8DAA5A006E903A /* RCTDigitsManager.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTDigitsManager.xcodeproj; path = "../node_modules/react-native-fabric-digits/ios/RCTDigitsManager.xcodeproj"; sourceTree = "<group>"; };
 		78C398B01ACF4ADC00677621 /* RCTLinking.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTLinking.xcodeproj; path = "../node_modules/react-native/Libraries/LinkingIOS/RCTLinking.xcodeproj"; sourceTree = "<group>"; };
 		832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTText.xcodeproj; path = "../node_modules/react-native/Libraries/Text/RCTText.xcodeproj"; sourceTree = "<group>"; };
+		B17F21561CB57C9600E44D02 /* RNCalendarEvents.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNCalendarEvents.xcodeproj; path = "../node_modules/react-native-calendar-events/RNCalendarEvents.xcodeproj"; sourceTree = "<group>"; };
+		B187085A1CB56819008FAACD /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +168,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B17F215C1CB57C9F00E44D02 /* libRNCalendarEvents.a in Frameworks */,
+				B187085B1CB56819008FAACD /* EventKit.framework in Frameworks */,
 				27F22CE81C8DAA9C006E903A /* libRCTDigitsManager.a in Frameworks */,
 				146834051AC3E58100842450 /* libReact.a in Frameworks */,
 				00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */,
@@ -291,6 +304,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				B17F21561CB57C9600E44D02 /* RNCalendarEvents.xcodeproj */,
 				27F22CE21C8DAA5A006E903A /* RCTDigitsManager.xcodeproj */,
 				146833FF1AC3E56700842450 /* React.xcodeproj */,
 				00C302A71ABCB8CE00DB3ED1 /* RCTActionSheet.xcodeproj */,
@@ -317,6 +331,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				B187085A1CB56819008FAACD /* EventKit.framework */,
 				13B07FAE1A68108700A75B9A /* TalkingStickClient */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* TalkingStickClientTests */,
@@ -335,6 +350,14 @@
 			children = (
 				13B07F961A680F5B00A75B9A /* TalkingStickClient.app */,
 				00E356EE1AD99517003FC87E /* TalkingStickClientTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B17F21571CB57C9600E44D02 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B17F215B1CB57C9600E44D02 /* libRNCalendarEvents.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -450,6 +473,10 @@
 					ProductGroup = 146834001AC3E56700842450 /* Products */;
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
+				{
+					ProductGroup = B17F21571CB57C9600E44D02 /* Products */;
+					ProjectRef = B17F21561CB57C9600E44D02 /* RNCalendarEvents.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -535,6 +562,13 @@
 			fileType = archive.ar;
 			path = libRCTText.a;
 			remoteRef = 832341B41AAA6A8300B99B32 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B17F215B1CB57C9600E44D02 /* libRNCalendarEvents.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNCalendarEvents.a;
+			remoteRef = B17F215A1CB57C9600E44D02 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -680,6 +714,7 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
+					"$(SRCROOT)/../node_modules/react-native-calendar-events/**",
 				);
 				INFOPLIST_FILE = TalkingStickClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -700,6 +735,7 @@
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../node_modules/react-native/React/**",
+					"$(SRCROOT)/../node_modules/react-native-calendar-events/**",
 				);
 				INFOPLIST_FILE = TalkingStickClient/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
