@@ -3,11 +3,11 @@ import _ from 'lodash';
 import React, {
   AsyncStorage,
   NativeModules,
-  Navigator,
   Text,
   View,
 } from 'react-native';
 
+import Calendar from './Calendar';
 import LoginPage from './LoginPage';
 import NameInputView from './NameInputView';
 import MeetingNameInputView from './MeetingNameInputView';
@@ -16,45 +16,50 @@ import MeetingView from './MeetingView';
 export default class BootstrapView extends React.Component {
   constructor() {
     super();
+    this.calendar = new Calendar();
     this.state = {
       hasCheckedSession: false,
     };
   }
-  
+
+  // TODO refactor this pls
   updateFromSession() {
-    NativeModules.DigitsManager.session((session) => {
-      console.log("Digits session", session);
-      const newState = {
-        hasCheckedSession: true,
-      };
-      
-      if (session) {
+    this.calendar.needsAuthorization((calendarAuthorizationStatus) => {
+      NativeModules.DigitsManager.session((session) => {
+        const newState = {
+          hasCheckedSession: true,
+          calendarAuthorizationStatus,
+        };
+
+        if (!session) {
+          this.setState(newState);
+          return;
+        }
+
         newState.user = {
           logged: !!session,
           id: session.userId,
         };
-        
-        AsyncStorage.multiGet(['userName', 'meeting'], (error, results) => {
+
+        AsyncStorage.getItem('userName', (error, userName) => {
           if (!error) {
-            results.forEach((kvpair) => {
-              const [k, v] = kvpair;
-              if (k == 'userName') {
-                console.log('Found user name', v);
-                newState.user.name = v;
-              } else if (k == 'meeting') {
-                newState.meeting = v;
-              }
-            });
+            newState.user.name = userName;
           }
-          
-          this.setState(newState);
+
+          if (calendarAuthorizationStatus !== 'authorized') {
+            this.setState(newState);
+            return;
+          }
+
+          this.calendar.events((events) => {
+            newState.events = events;
+            this.setState(newState);
+          });
         });
-      } else {
-        this.setState(newState);
-      }
+      });
     });
   }
-  
+
   updateName(newName) {
     console.log('Updating Name to', newName);
     AsyncStorage.setItem('userName', newName, (error) => {
@@ -64,81 +69,51 @@ export default class BootstrapView extends React.Component {
       }
     });
   }
-  
+
   updateMeetingName(newMeetingName) {
     console.log('Updating Meeting Name to', newMeetingName);
-    AsyncStorage.setItem('meeting', newMeetingName, (error) => {
-      if (!error) {
-        this.setState({meeting: newMeetingName});
-      }
-    });
+    this.setState({meeting: newMeetingName});
   }
-  
+
   componentWillMount() {
     this.updateFromSession();
   }
-  
-  renderScene(route, navigator) {
-    console.log(`renderScene for ${route.name}`);
-    if (route.component) {
-      const props = route.props || {};
-      props.navigator = navigator;
-      return React.createElement(route.component, {...props});
-    } else {
-      throw new Error("No component passed in route " + JSON.stringify(route));
-    }
-  }
-  
+
   render() {
-    let route = null;
-    if (this.state.user) {
-      if (this.state.user.name) {
-        console.log(`this.state ${JSON.stringify(this.state)}`);
-        if (this.state.meeting) {
-          route = {
-            name: 'Meeting View',
-            component: MeetingView,
-            props: {
-              user: this.state.user,
-              meeting: this.state.meeting,
-            },
-          };
-        } else {
-          route = {
-            name: 'Meeting Name Input View',
-            component: MeetingNameInputView,
-            props: {
-              user: this.state.user,
-              updateMeetingName: this.updateMeetingName.bind(this),
-            },
-          };
-        }
-      } else {
-        route = {
-          name: 'Name Input View',
-          component: NameInputView,
-          props: {
-            user: this.state.user,
-            updateName: this.updateName.bind(this),
-          }
-        }
-      }
-    } else {
-      route = {
-        name: 'Login Page',
-        component: LoginPage,
-        props: {
-          user: null,
-          updateLoginState: this.updateFromSession.bind(this),
-        },
-      };
+    if (!this.state.hasCheckedSession) {
+      return this.renderLoading();
     }
-    
-    return this.state.hasCheckedSession ?
-    this.renderScene(route) :
-    this.renderLoading();
+
+    if (this.state.calendarAuthorizationStatus !== 'authorized') {
+      this.calendar.promptForAuthorization((calendarAuthorizationStatus) => {
+        this.setState({calendarAuthorizationStatus});
+      });
+      return this.renderLoading();
+    }
+
+    if (!this.state.user) {
+      return <LoginPage user={null} updateLoginState={this.updateFromSession.bind(this)} />;
+    }
+
+    if (!this.state.user.name) {
+      return <NameInputView user={this.state.user} updateName={this.updateName.bind(this)} />;
+    }
+
+    if (!this.state.meeting) {
+      return <MeetingNameInputView
+        user={this.state.user}
+        events={this.state.events}
+        updateMeetingName={this.updateMeetingName.bind(this)}
+      />;
+    }
+
+    return <MeetingView
+      user={this.state.user}
+      meeting={this.state.meeting}
+      updateMeetingName={this.updateMeetingName.bind(this)}
+    />;
   }
-  
+
   renderLoading() {
     return <View>
     <Text>Loading Talking Stick</Text>

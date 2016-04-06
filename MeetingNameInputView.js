@@ -1,6 +1,7 @@
 import React, {
   AsyncStorage,
   Component,
+  ListView,
   StyleSheet,
   Text,
   TextInput,
@@ -29,14 +30,27 @@ const styles =  StyleSheet.create({
     marginTop: 5,
     padding: 15,
   },
+  eventListRow: {
+    padding: 20,
+  },
 });
 
 export default class MeetingNameInputView extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    const dataSource = new ListView.DataSource({
+      rowHasChanged: (row1, row2) => row1 !== row2,
+    });
     this.state = {
       nameText: '',
+      dataSource: dataSource.cloneWithRows(props.events),
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(nextPropsevents),
+    });
   }
 
   whenNextButtonPressed() {
@@ -57,7 +71,14 @@ export default class MeetingNameInputView extends Component {
     }
 
     return <View style={styles.container}>
-      <Text style={styles.title}>What’s the name of your meeting?</Text>
+      <Text style={styles.title}>Pick a Meeting</Text>
+
+      <ListView
+        dataSource={this.state.dataSource}
+        renderRow={this.renderCalendarEventRow.bind(this)}
+      />
+
+      <Text style={styles.title}>Or</Text>
       <TextInput
         style={styles.textInput}
         onChangeText={(nameText) => this.setState({nameText})}
@@ -68,5 +89,11 @@ export default class MeetingNameInputView extends Component {
         <Text style={buttonTextStyle}>Next</Text>
       </TouchableHighlight>
     </View>
+  }
+
+  renderCalendarEventRow(event) {
+    return <TouchableHighlight style={styles.eventListRow} onPress={this.props.updateMeetingName.bind(this, event.title)}>
+      <Text>{event.title}</Text>
+    </TouchableHighlight>;
   }
 }

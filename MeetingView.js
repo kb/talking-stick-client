@@ -5,7 +5,6 @@ import React, {
   Component,
   StyleSheet,
   Text,
-  TextInput,
   TouchableHighlight,
   TouchableWithoutFeedback,
   View,
@@ -19,20 +18,14 @@ const styles =  StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    padding: 30,
+    padding: 20,
   },
   title: {
     fontSize: 24,
   },
-  textInput: {
-    height: 40,
-    borderColor: 'black',
-    borderWidth: 1,
-    marginTop: 30,
-  },
-  nextButton: {
-    marginTop: 5,
-    padding: 15,
+  backButton: {
+    paddingTop: 25,
+    paddingLeft: 10,
   },
 });
 
@@ -52,8 +45,8 @@ export default class MeetingView extends Component {
     this.setState({meeting: payload.meeting});
   }
 
-  whenNextButtonPressed() {
-    this.meetingClient.requestStick();
+  whenBackButtonPressed() {
+    this.props.updateMeetingName(null);
   }
 
   whenViewTapped() {
@@ -86,14 +79,21 @@ export default class MeetingView extends Component {
       </View>;
     }
 
-    return <TouchableWithoutFeedback onPress={this.whenViewTapped.bind(this)}>
-      <View style={styles.container}>
-        <Text style={styles.title}>{this.props.meeting}</Text>
-        {this.maybeRenderCurrentSpeaker()}
-        {this.maybeRenderNextSpeaker()}
-        {this.maybeRenderQueuePosition()}
-      </View>
-    </TouchableWithoutFeedback>
+    return <View>
+      <TouchableHighlight style={styles.backButton} onPress={this.whenBackButtonPressed.bind(this)}>
+        <Text>
+          Back
+        </Text>
+      </TouchableHighlight>
+      <TouchableWithoutFeedback onPress={this.whenViewTapped.bind(this)}>
+        <View style={styles.container}>
+          <Text style={styles.title}>{this.props.meeting}</Text>
+          {this.maybeRenderCurrentSpeaker()}
+          {this.maybeRenderNextSpeaker()}
+          {this.maybeRenderQueuePosition()}
+        </View>
+      </TouchableWithoutFeedback>
+    </View>
   }
 
   maybeRenderCurrentSpeaker() {
