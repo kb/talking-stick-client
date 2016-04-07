@@ -4,11 +4,15 @@ export default class Calendar {
 
   }
 
-  needsAuthorization() {
-    return false
+  needsAuthorization(callback) {
+    callback('authorized');
   }
 
   promptForAuthorization() {
 
+  }
+
+  events(callback) {
+    callback([]);
   }
 }
