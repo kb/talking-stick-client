@@ -7,7 +7,8 @@
   },
   "dependencies": {
     "moment": "^2.12.0",
-    "react-native": "^0.21.0",
+    "react": "^0.14.8",
+    "react-native": "^0.23.0",
     "react-native-calendar-events": "^0.1.4",
     "react-native-dimmer": "yadi-social/react-native-dimmer",
     "react-native-fabric-digits": "kb/react-native-fabric-digits",

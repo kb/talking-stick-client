@@ -94,7 +94,7 @@ export default class MeetingView extends Component {
     const isNewSpeaker = newMeetingState.speaker && newMeetingState.speaker.id === this.props.user.id;
     if (!isOldSpeaker && isNewSpeaker) {
       console.log('Vibrating! bzzzzz');
-      //Vibration.vibrate();
+      Vibration.vibrate();
     }
     this.setState({meeting: newMeetingState});
   }
