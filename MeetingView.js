@@ -164,8 +164,11 @@ export default class MeetingView extends Component {
       }
     }
 
+    const isUserSpeaker = this.state.meeting.speaker && this.state.meeting.speaker.id == this.props.user.id;
+    const backgroundColor = isUserSpeaker ? 'green' : undefined;
+
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, {backgroundColor}]}>
         <TouchableWithoutFeedback onPress={this.whenViewTapped.bind(this)}>
           <View style={styles.mainContainer}>
             <TouchableHighlight style={styles.backButton} onPress={this.whenBackButtonPressed.bind(this)}>
