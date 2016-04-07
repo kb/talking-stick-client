@@ -1,5 +1,4 @@
 import React, {
-  AsyncStorage,
   Component,
   ListView,
   StyleSheet,
@@ -17,14 +16,26 @@ const styles =  StyleSheet.create({
     alignItems: 'center',
     padding: 30,
   },
+  subTitle: {
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
   title: {
     fontSize: 24,
   },
+  inputContainer: {
+    flexDirection: 'row',
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    paddingBottom: 20,
+  },
   textInput: {
+    flex: 2,
     height: 40,
+    padding: 5,
     borderColor: 'black',
     borderWidth: 1,
-    marginTop: 30,
+    marginTop: 10,
   },
   nextButton: {
     marginTop: 5,
@@ -55,7 +66,6 @@ export default class MeetingNameInputView extends Component {
 
   whenNextButtonPressed() {
     if (this.state.nameText !== '') {
-      console.log('Setting Meeting Name to', this.state.nameText)
       this.props.updateMeetingName(this.state.nameText);
     }
   }
@@ -70,25 +80,29 @@ export default class MeetingNameInputView extends Component {
       buttonTextStyle.color = 'gray';
     }
 
-    return <View style={styles.container}>
-      <Text style={styles.title}>Pick a Meeting</Text>
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>Pick a Meeting</Text>
 
-      <ListView
-        dataSource={this.state.dataSource}
-        renderRow={this.renderCalendarEventRow.bind(this)}
-      />
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Custom Meeting Name"
+            style={styles.textInput}
+            onChangeText={(nameText) => this.setState({nameText})}
+            text={this.state.nameText}
+          />
+          <TouchableHighlight style={styles.nextButton} disabled={nextButtonDisabled} onPress={this.whenNextButtonPressed.bind(this)}>
+            <Text style={buttonTextStyle}>Next</Text>
+          </TouchableHighlight>
+        </View>
 
-      <Text style={styles.title}>Or</Text>
-      <TextInput
-        style={styles.textInput}
-        onChangeText={(nameText) => this.setState({nameText})}
-        text={this.state.nameText}
-        autoFocus={true}
-      />
-      <TouchableHighlight style={styles.nextButton} disabled={nextButtonDisabled} onPress={this.whenNextButtonPressed.bind(this)}>
-        <Text style={buttonTextStyle}>Next</Text>
-      </TouchableHighlight>
+        <Text style={styles.subTitle}>Calendar Events</Text>
+        <ListView
+          dataSource={this.state.dataSource}
+          renderRow={this.renderCalendarEventRow.bind(this)}
+        />
     </View>
+    );
   }
 
   renderCalendarEventRow(event) {

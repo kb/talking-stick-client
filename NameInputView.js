@@ -1,5 +1,4 @@
 import React, {
-  AsyncStorage,
   Component,
   StyleSheet,
   Text,

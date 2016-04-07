@@ -1,7 +1,6 @@
 import _ from 'lodash';
 
 import React, {
-  AsyncStorage,
   Component,
   StyleSheet,
   Text,
@@ -13,7 +12,9 @@ import React, {
 import MeetingClient from './MeetingClient'
 import RNDimmer from 'react-native-dimmer';
 
-const styles =  StyleSheet.create({
+import LoadingView from './LoadingView';
+
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
@@ -43,9 +44,11 @@ export default class MeetingView extends Component {
     // Disable dimmer (so the screen will stay on)
     RNDimmer.set(true);
   }
+
   componentWillUnmount() {
     // Enable dimmer (so the screen will dim)
     RNDimmer.set(false);
+    this.meetingClient.close();
   }
 
   // fires when we receive a message
@@ -83,9 +86,7 @@ export default class MeetingView extends Component {
 
   render() {
     if (!this.state.meeting) {
-      return <View>
-        <Text style={styles.title}>Loading</Text>
-      </View>;
+      return <LoadingView />;
     }
 
     return <TouchableWithoutFeedback onPress={this.whenViewTapped.bind(this)}>

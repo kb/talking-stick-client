@@ -3,8 +3,6 @@ import _ from 'lodash';
 import React, {
   AsyncStorage,
   NativeModules,
-  Text,
-  View,
 } from 'react-native';
 
 import Calendar from './Calendar';
@@ -12,6 +10,7 @@ import LoginPage from './LoginPage';
 import NameInputView from './NameInputView';
 import MeetingNameInputView from './MeetingNameInputView';
 import MeetingView from './MeetingView';
+import LoadingView from './LoadingView';
 
 export default class BootstrapView extends React.Component {
   constructor() {
@@ -116,8 +115,6 @@ export default class BootstrapView extends React.Component {
   }
 
   renderLoading() {
-    return <View>
-    <Text>Loading Talking Stick</Text>
-    </View>
+    return <LoadingView />;
   }
 }
