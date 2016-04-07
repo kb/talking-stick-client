@@ -71,9 +71,9 @@ export default class BootstrapView extends React.Component {
     });
   }
 
-  updateMeetingName(newMeetingName) {
-    console.log('Updating Meeting Name to', newMeetingName);
-    this.setState({meeting: newMeetingName});
+  updateMeeting(newMeeting) {
+    console.log('Updating Meeting to', newMeeting);
+    this.setState({meeting: newMeeting});
   }
 
   componentWillMount() {
@@ -104,14 +104,14 @@ export default class BootstrapView extends React.Component {
       return <MeetingNameInputView
         user={this.state.user}
         events={this.state.events}
-        updateMeetingName={this.updateMeetingName.bind(this)}
+        updateMeeting={this.updateMeeting.bind(this)}
       />;
     }
 
     return <MeetingView
       user={this.state.user}
       meeting={this.state.meeting}
-      updateMeetingName={this.updateMeetingName.bind(this)}
+      updateMeeting={this.updateMeeting.bind(this)}
     />;
   }
 

@@ -12,6 +12,7 @@ import React, {
 import MeetingClient from './MeetingClient'
 import RNDimmer from 'react-native-dimmer';
 
+import CountdownDisplay from './CountdownDisplay';
 import LoadingView from './LoadingView';
 
 const styles = StyleSheet.create({
@@ -48,6 +49,7 @@ const styles = StyleSheet.create({
   moderatorMenuContainer: {
     flex: 1,
     padding: 10,
+    paddingBottom: 20,
     alignSelf: 'stretch',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -62,7 +64,7 @@ export default class MeetingView extends Component {
   constructor(props) {
     super(props);
     console.log("MeetingView Props " + JSON.stringify(props));
-    this.meetingClient = new MeetingClient(props.user, props.meeting, this.receiveMeetingUpdate.bind(this));
+    this.meetingClient = new MeetingClient(props.user, props.meeting.title, this.receiveMeetingUpdate.bind(this));
     this.state = {
       meeting: null,
       showModeratorMenu: false,
@@ -88,7 +90,7 @@ export default class MeetingView extends Component {
   }
 
   whenBackButtonPressed() {
-    this.props.updateMeetingName(null);
+    this.props.updateMeeting(null);
   }
 
   whenViewTapped() {
@@ -161,7 +163,8 @@ export default class MeetingView extends Component {
                 Back
               </Text>
             </TouchableHighlight>
-            <Text style={styles.title}>{this.props.meeting}</Text>
+            <Text style={styles.title}>{this.props.meeting.title}</Text>
+            {this.maybeRenderCountdown()}
             {this.maybeRenderCurrentSpeaker()}
             {this.maybeRenderNextSpeaker()}
             {this.maybeRenderQueuePosition()}
@@ -174,6 +177,14 @@ export default class MeetingView extends Component {
         </TouchableHighlight>
       </View>
     );
+  }
+
+  maybeRenderCountdown() {
+    if (!this.props.meeting.endTimeMs) {
+      return undefined;
+    }
+
+    return <CountdownDisplay endTimeMs={this.props.meeting.endTimeMs} />;
   }
 
   maybeRenderCurrentSpeaker() {
