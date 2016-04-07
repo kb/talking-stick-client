@@ -5,7 +5,7 @@ export default class Calendar {
   constructor() {
   }
 
-  needsAuthorization(callback) {
+  authorizationStatus(callback) {
     callback('authorized');
   }
 

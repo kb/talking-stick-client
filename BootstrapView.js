@@ -24,7 +24,7 @@ export default class BootstrapView extends React.Component {
 
   // TODO refactor this pls
   updateFromSession() {
-    this.calendar.needsAuthorization((calendarAuthorizationStatus) => {
+    this.calendar.authorizationStatus((calendarAuthorizationStatus) => {
       NativeModules.DigitsManager.session((session) => {
         const newState = {
           hasCheckedSession: true,

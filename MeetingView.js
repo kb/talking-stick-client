@@ -59,7 +59,6 @@ export default class MeetingView extends Component {
   }
 
   whenViewTapped() {
-    console.log('VIEW TAPPED');
     const now = new Date().getTime();
     if (this.lastTapTime) {
       if (now - this.lastTapTime <= 200) {

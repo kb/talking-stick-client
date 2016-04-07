@@ -8,7 +8,7 @@ export default class Calendar {
     this.endDate = moment().endOf('day').format(this.dateFormat);
   }
 
-  needsAuthorization(callback) {
+  authorizationStatus(callback) {
     RNCalendarEvents.authorizationStatus(({status}) => callback(status));
   }
 
