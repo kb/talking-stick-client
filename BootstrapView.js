@@ -18,6 +18,7 @@ export default class BootstrapView extends React.Component {
     this.calendar = new Calendar();
     this.state = {
       hasCheckedSession: false,
+      meeting: null,
     };
   }
 
