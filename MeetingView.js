@@ -6,12 +6,14 @@ import React, {
   Text,
   TouchableHighlight,
   TouchableWithoutFeedback,
+  Vibration,
   View,
 } from 'react-native';
 
 import MeetingClient from './MeetingClient'
 import RNDimmer from 'react-native-dimmer';
 
+import CountdownDisplay from './CountdownDisplay';
 import LoadingView from './LoadingView';
 
 const styles = StyleSheet.create({
@@ -48,6 +50,7 @@ const styles = StyleSheet.create({
   moderatorMenuContainer: {
     flex: 1,
     padding: 10,
+    paddingBottom: 20,
     alignSelf: 'stretch',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -55,6 +58,8 @@ const styles = StyleSheet.create({
   },
   moderatorButton: {
     padding: 15,
+    alignItems: 'center',
+    alignSelf: 'stretch',
   },
 });
 
@@ -62,7 +67,7 @@ export default class MeetingView extends Component {
   constructor(props) {
     super(props);
     console.log("MeetingView Props " + JSON.stringify(props));
-    this.meetingClient = new MeetingClient(props.user, props.meeting, this.receiveMeetingUpdate.bind(this));
+    this.meetingClient = new MeetingClient(props.user, props.meeting.title, this.receiveMeetingUpdate.bind(this));
     this.state = {
       meeting: null,
       showModeratorMenu: false,
@@ -83,12 +88,19 @@ export default class MeetingView extends Component {
 
   // fires when we receive a message
   receiveMeetingUpdate(payload) {
-    console.log("receiveMeetingUpdate " + JSON.stringify(payload));
-    this.setState({meeting: payload.meeting});
+    const newMeetingState = payload.meeting;
+    console.log("receiveMeetingUpdate " + JSON.stringify(payload), this.props.user, this.state.meeting);
+    const isOldSpeaker = this.state.meeting && this.state.meeting.speaker && this.state.meeting.speaker.id === this.props.user.id;
+    const isNewSpeaker = newMeetingState.speaker && newMeetingState.speaker.id === this.props.user.id;
+    if (!isOldSpeaker && isNewSpeaker) {
+      console.log('Vibrating! bzzzzz');
+      Vibration.vibrate();
+    }
+    this.setState({meeting: newMeetingState});
   }
 
   whenBackButtonPressed() {
-    this.props.updateMeetingName(null);
+    this.props.updateMeeting(null);
   }
 
   whenViewTapped() {
@@ -152,8 +164,11 @@ export default class MeetingView extends Component {
       }
     }
 
+    const isUserSpeaker = this.state.meeting.speaker && this.state.meeting.speaker.id == this.props.user.id;
+    const backgroundColor = isUserSpeaker ? 'green' : undefined;
+
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, {backgroundColor}]}>
         <TouchableWithoutFeedback onPress={this.whenViewTapped.bind(this)}>
           <View style={styles.mainContainer}>
             <TouchableHighlight style={styles.backButton} onPress={this.whenBackButtonPressed.bind(this)}>
@@ -161,7 +176,8 @@ export default class MeetingView extends Component {
                 Back
               </Text>
             </TouchableHighlight>
-            <Text style={styles.title}>{this.props.meeting}</Text>
+            <Text style={styles.title}>{this.props.meeting.title}</Text>
+            {this.maybeRenderCountdown()}
             {this.maybeRenderCurrentSpeaker()}
             {this.maybeRenderNextSpeaker()}
             {this.maybeRenderQueuePosition()}
@@ -174,6 +190,14 @@ export default class MeetingView extends Component {
         </TouchableHighlight>
       </View>
     );
+  }
+
+  maybeRenderCountdown() {
+    if (!this.props.meeting.endTimeMs) {
+      return undefined;
+    }
+
+    return <CountdownDisplay endTimeMs={this.props.meeting.endTimeMs} />;
   }
 
   maybeRenderCurrentSpeaker() {

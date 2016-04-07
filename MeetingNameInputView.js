@@ -66,7 +66,7 @@ export default class MeetingNameInputView extends Component {
 
   whenNextButtonPressed() {
     if (this.state.nameText !== '') {
-      this.props.updateMeetingName(this.state.nameText);
+      this.props.updateMeeting({title: this.state.nameText});
     }
   }
 
@@ -106,7 +106,7 @@ export default class MeetingNameInputView extends Component {
   }
 
   renderCalendarEventRow(event) {
-    return <TouchableHighlight style={styles.eventListRow} onPress={this.props.updateMeetingName.bind(this, event.title)}>
+    return <TouchableHighlight style={styles.eventListRow} onPress={this.props.updateMeeting.bind(this, event)}>
       <Text>{event.title}</Text>
     </TouchableHighlight>;
   }
