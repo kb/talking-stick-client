@@ -19,13 +19,41 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-start',
+    alignSelf: 'stretch',
     alignItems: 'center',
+  },
+  mainContainer: {
+    flex: 2,
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    alignSelf: 'stretch',
     padding: 20,
   },
   title: {
     fontSize: 24,
   },
+  subTitle: {
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
   backButton: {
+    padding: 15,
+  },
+  bottomContainer: {
+    padding: 20,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+  },
+  moderatorMenuContainer: {
+    flex: 1,
+    padding: 10,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#ccc',
+  },
+  moderatorButton: {
     padding: 15,
   },
 });
@@ -37,6 +65,7 @@ export default class MeetingView extends Component {
     this.meetingClient = new MeetingClient(props.user, props.meeting, this.receiveMeetingUpdate.bind(this));
     this.state = {
       meeting: null,
+      showModeratorMenu: false,
     };
   }
 
@@ -48,6 +77,7 @@ export default class MeetingView extends Component {
   componentWillUnmount() {
     // Enable dimmer (so the screen will dim)
     RNDimmer.set(false);
+    // Close the client when this component unmounts to prevent state updates in the receiveMeetingUpdate callback
     this.meetingClient.close();
   }
 
@@ -71,6 +101,25 @@ export default class MeetingView extends Component {
     this.lastTapTime = now;
   }
 
+  whenModeratorButtonPressed() {
+    const moderator = this.state.meeting.moderator;
+    if (moderator == null) {
+      this.meetingClient.becomeModerator();
+    } else if (moderator.id === this.props.user.id) {
+      this.setState({showModeratorMenu: !this.state.showModeratorMenu});
+    }
+  }
+
+  whenStopModeratingButtonPressed() {
+    this.meetingClient.relinquishModerator()
+    this.setState({showModeratorMenu: false});
+  }
+
+  whenResetQueueButtonPressed() {
+    this.meetingClient.resetSpeakerAndQueue()
+    this.setState({showModeratorMenu: false});
+  }
+
   userAction() {
     const meeting = this.state.meeting;
     if (meeting) {
@@ -89,19 +138,42 @@ export default class MeetingView extends Component {
       return <LoadingView />;
     }
 
-    return <TouchableWithoutFeedback onPress={this.whenViewTapped.bind(this)}>
+    let moderatorButtonText = 'Become Moderator';
+    if (this.state.meeting.moderator != null) {
+      const moderator = this.state.meeting.moderator;
+      if (moderator.id === this.props.user.id) {
+        if (this.state.showModeratorMenu) {
+          moderatorButtonText = 'Close Moderator Menu';
+        }else {
+          moderatorButtonText = 'Moderator Menu';
+        }
+      } else {
+        moderatorButtonText = `${moderator.name} is Moderator`;
+      }
+    }
+
+    return (
       <View style={styles.container}>
-        <TouchableHighlight style={styles.backButton} onPress={this.whenBackButtonPressed.bind(this)}>
-          <Text>
-            Back
-          </Text>
+        <TouchableWithoutFeedback onPress={this.whenViewTapped.bind(this)}>
+          <View style={styles.mainContainer}>
+            <TouchableHighlight style={styles.backButton} onPress={this.whenBackButtonPressed.bind(this)}>
+              <Text>
+                Back
+              </Text>
+            </TouchableHighlight>
+            <Text style={styles.title}>{this.props.meeting}</Text>
+            {this.maybeRenderCurrentSpeaker()}
+            {this.maybeRenderNextSpeaker()}
+            {this.maybeRenderQueuePosition()}
+          </View>
+        </TouchableWithoutFeedback>
+
+        {this.maybeRenderModeratorMenu()}
+        <TouchableHighlight style={styles.bottomContainer} onPress={this.whenModeratorButtonPressed.bind(this)}>
+          <Text>{moderatorButtonText}</Text>
         </TouchableHighlight>
-        <Text style={styles.title}>{this.props.meeting}</Text>
-        {this.maybeRenderCurrentSpeaker()}
-        {this.maybeRenderNextSpeaker()}
-        {this.maybeRenderQueuePosition()}
       </View>
-    </TouchableWithoutFeedback>
+    );
   }
 
   maybeRenderCurrentSpeaker() {
@@ -130,5 +202,21 @@ export default class MeetingView extends Component {
     }
 
     return <Text>There are {queueIndex} speakers ahead of you</Text>;
+  }
+
+  maybeRenderModeratorMenu() {
+    if (!this.state.showModeratorMenu) {
+      return undefined;
+    }
+
+    return <View style={styles.moderatorMenuContainer}>
+      <Text style={styles.subTitle}>Moderator Menu</Text>
+        <TouchableHighlight style={styles.moderatorButton} onPress={this.whenStopModeratingButtonPressed.bind(this)}>
+          <Text>Stop Moderating</Text>
+        </TouchableHighlight>
+        <TouchableHighlight style={styles.moderatorButton} onPress={this.whenResetQueueButtonPressed.bind(this)}>
+          <Text>Reset Queue</Text>
+        </TouchableHighlight>
+    </View>
   }
 }
