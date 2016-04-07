@@ -2,6 +2,7 @@
     package="com.talkingstickclient">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
 
     <application
       android:allowBackup="true"
@@ -22,6 +23,4 @@
             android:name="io.fabric.ApiKey"
             android:value="cfd6853bd2c3835fe98fa546d75d8adf8e218afe" />
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
-
 </manifest>
