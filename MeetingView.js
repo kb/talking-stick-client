@@ -6,6 +6,7 @@ import React, {
   Text,
   TouchableHighlight,
   TouchableWithoutFeedback,
+  Vibration,
   View,
 } from 'react-native';
 
@@ -57,6 +58,8 @@ const styles = StyleSheet.create({
   },
   moderatorButton: {
     padding: 15,
+    alignItems: 'center',
+    alignSelf: 'stretch',
   },
 });
 
@@ -85,8 +88,15 @@ export default class MeetingView extends Component {
 
   // fires when we receive a message
   receiveMeetingUpdate(payload) {
-    console.log("receiveMeetingUpdate " + JSON.stringify(payload));
-    this.setState({meeting: payload.meeting});
+    const newMeetingState = payload.meeting;
+    console.log("receiveMeetingUpdate " + JSON.stringify(payload), this.props.user, this.state.meeting);
+    const isOldSpeaker = this.state.meeting && this.state.meeting.speaker && this.state.meeting.speaker.id === this.props.user.id;
+    const isNewSpeaker = newMeetingState.speaker && newMeetingState.speaker.id === this.props.user.id;
+    if (!isOldSpeaker && isNewSpeaker) {
+      console.log('Vibrating! bzzzzz');
+      //Vibration.vibrate();
+    }
+    this.setState({meeting: newMeetingState});
   }
 
   whenBackButtonPressed() {

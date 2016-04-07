@@ -31,6 +31,12 @@ export default React.createClass({
 
   render() {
     const differenceMs = this.props.endTimeMs - this.state.now;
+    if (differenceMs <= 0) {
+      return <View>
+        <Text>Meeting Over</Text>
+      </View>;
+    }
+
     const formattedTimeRemaining = moment.duration(differenceMs).humanize();
     return <View>
       <Text>{formattedTimeRemaining} Remaining</Text>
