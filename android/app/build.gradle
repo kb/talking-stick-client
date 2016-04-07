@@ -124,8 +124,9 @@ dependencies {
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules
-    compile project(':react-native-fabric-digits')
     compile('com.digits.sdk.android:digits:1.10.1@aar') {
         transitive = true;
     }
+    compile project(':react-native-fabric-digits')
+    compile project(':react-native-dimmer')
 }

@@ -5,3 +5,7 @@ include ':app'
 include ':react-native-fabric-digits'
 project(':react-native-fabric-digits').projectDir = new File(settingsDir, '../node_modules/react-native-fabric-digits/android')
 
+include ':react-native-dimmer'
+project(':react-native-dimmer').projectDir = new File(settingsDir, '../node_modules/react-native-dimmer/android')
+
+

@@ -11,6 +11,7 @@ import React, {
 } from 'react-native';
 
 import MeetingClient from './MeetingClient'
+import RNDimmer from 'react-native-dimmer';
 
 const styles =  StyleSheet.create({
   container: {
@@ -36,6 +37,15 @@ export default class MeetingView extends Component {
     this.state = {
       meeting: null,
     };
+  }
+
+  componentWillMount() {
+    // Disable dimmer (so the screen will stay on)
+    RNDimmer.set(true);
+  }
+  componentWillUnmount() {
+    // Enable dimmer (so the screen will dim)
+    RNDimmer.set(false);
   }
 
   // fires when we receive a message

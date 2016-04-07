@@ -10,6 +10,7 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.digits.sdk.android.Digits;
 import io.fabric.sdk.android.Fabric;
 import com.proxima.RCTDigits.DigitsPackage;
+import social.yadi.rndimmer.ReactNativeDimmerPackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +46,7 @@ public class MainActivity extends ReactActivity {
     @Override
     protected List<ReactPackage> getPackages() {
         return Arrays.<ReactPackage>asList(
-            new MainReactPackage(), new DigitsPackage()
+            new MainReactPackage(), new DigitsPackage(), new ReactNativeDimmerPackage(this)
         );
     }
 
