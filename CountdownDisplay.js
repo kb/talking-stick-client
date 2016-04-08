@@ -6,6 +6,8 @@ import React, {
 import TimerMixin from 'react-timer-mixin';
 import moment from 'moment';
 
+import Colors from './Colors';
+
 export default React.createClass({
   mixins: [TimerMixin],
 
@@ -39,8 +41,7 @@ export default React.createClass({
 
     const formattedTimeRemaining = moment.duration(differenceMs).humanize();
     return <View>
-      <Text>{formattedTimeRemaining} Remaining</Text>
+      <Text style={{color: Colors.TEXT}}>{formattedTimeRemaining} Remaining</Text>
     </View>
   },
 });
-

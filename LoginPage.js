@@ -7,8 +7,6 @@ var { DigitsLoginButton, DigitsLogoutButton } = Digits;
 var DigitsManager = require("react-native").NativeModules.DigitsManager;
 
 var {
-  AppRegistry,
-  AsyncStorage,
   Component,
   StyleSheet,
   Text,
@@ -16,29 +14,39 @@ var {
   View,
 } = React;
 
+import Colors from './Colors';
+
 var styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    backgroundColor: Colors.GRAY,
   },
   DigitsAuthenticateButton: {
     height: 50,
     width: 230,
-    backgroundColor: '#13988A',
+    backgroundColor: Colors.GREEN,
     justifyContent: 'center',
-    borderRadius: 5
+    borderRadius: 5,
+    margin: 20,
   },
   DigitsAuthenticateButtonText: {
     fontSize: 16,
-    color: '#fff',
+    color: Colors.TEXT,
     alignSelf: 'center',
-    fontWeight: 'bold'
-  }
+    fontWeight: 'bold',
+  },
+  text: {
+    color: Colors.TEXT,
+  },
+  title: {
+    fontSize: 24,
+    color: Colors.TEXT,
+  },
 });
 
-class LoginPage extends Component {
+export default class LoginPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -60,34 +68,20 @@ class LoginPage extends Component {
       // The native bridge should return the userId in the completion response
       // but for now we're fetching it from the Digits session ourselves
       // to avoid having to mess with the bridge further.
-
     }
   }
 
   render() {
     return (
       <View style={styles.container}>
+        <Text style={styles.title}>
+          Welcome to Talking Stick
+        </Text>
         {this.state.error ? <Text>An error occured.</Text> : null}
         {this.renderLoginScreen()}
       </View>
     );
   }
-
-  // // User is authenticated
-  // renderHomeScreen() {
-  //   return (
-  //     <View>
-  //     <Text>
-  //       TALKING STICK
-  //     </Text>
-  //     <DigitsLogoutButton
-  //     completion={this.completion.bind(this)}
-  //     text="Logout"
-  //     buttonStyle={styles.DigitsAuthenticateButton}
-  //     textStyle={styles.DigitsAuthenticateButtonText}/>
-  //     </View>
-  //   );
-  // }
 
   renderLoginScreen() {
     return (
@@ -97,24 +91,27 @@ class LoginPage extends Component {
         phoneNumber: "+1",
         appearance: {
           backgroundColor: {
-            hex: "#ffffff",
+            hex: Colors.GRAY,
             alpha: 1.0
           },
           accentColor: {
-            hex: "#43a16f",
-            alpha: 0.7
+            hex: 'black',
+            alpha: 1.0,
           },
           headerFont: {
             name: "Arial",
-            size: 16
+            size: 16,
+            color: Colors.TEXT,
           },
           labelFont: {
             name: "Helvetica",
-            size: 18
+            size: 18,
+            color: Colors.TEXT,
           },
           bodyFont: {
             name: "Helvetica",
-            size: 16
+            size: 16,
+            color: Colors.TEXT,
           }
         }
       }}
@@ -125,5 +122,3 @@ class LoginPage extends Component {
     );
   }
 }
-
-module.exports = LoginPage;

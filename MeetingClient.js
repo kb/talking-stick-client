@@ -8,7 +8,8 @@ export default class MeetingClient {
     this.requestPayload = JSON.stringify({
       user: {
         id: user.id,
-        name: user.name
+        name: user.name,
+        email: user.email,
       },
       meeting_id: meetingName,
     });

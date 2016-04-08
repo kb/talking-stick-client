@@ -5,6 +5,8 @@ import React, {
   NativeModules,
 } from 'react-native';
 
+var DigitsManager = require("react-native").NativeModules.DigitsManager;
+
 import Calendar from './Calendar';
 import LoginPage from './LoginPage';
 import NameInputView from './NameInputView';
@@ -41,9 +43,16 @@ export default class BootstrapView extends React.Component {
           id: session.userId,
         };
 
-        AsyncStorage.getItem('userName', (error, userName) => {
-          if (!error) {
-            newState.user.name = userName;
+        AsyncStorage.multiGet(['userName', 'userEmail'], (error, results) => {
+          if (_.isEmpty(error)) {
+            results.forEach((pair) => {
+              const [k, v] = pair;
+              if (k === 'userName') {
+                newState.user.name = v;
+              } else if (k === 'userEmail') {
+                newState.user.email = v;
+              }
+            });
           }
 
           if (calendarAuthorizationStatus !== 'authorized') {
@@ -71,9 +80,29 @@ export default class BootstrapView extends React.Component {
     });
   }
 
+  updateEmail(newEmail) {
+    console.log('Updating Email to', newEmail);
+    AsyncStorage.setItem('userEmail', newEmail, (error) => {
+      if (!error) {
+        console.log('Updated email, setting state', _.extend(this.state.user, {email: newEmail}));
+        this.setState({user: _.extend(this.state.user, {email: newEmail})});
+      }
+    });
+  }
+
   updateMeeting(newMeeting) {
     console.log('Updating Meeting to', newMeeting);
     this.setState({meeting: newMeeting});
+  }
+
+  logout() {
+    console.log("LOGGING OUT");
+    DigitsManager.logout();
+    AsyncStorage.multiRemove(['userName', 'userEmail'], (errors) => {
+      if (_.isEmpty(errors)) {
+        this.setState({user: null});
+      }
+    });
   }
 
   componentWillMount() {
@@ -96,14 +125,19 @@ export default class BootstrapView extends React.Component {
       return <LoginPage user={null} updateLoginState={this.updateFromSession.bind(this)} />;
     }
 
-    if (!this.state.user.name) {
-      return <NameInputView user={this.state.user} updateName={this.updateName.bind(this)} />;
+    if (!this.state.user.name || !this.state.user.email) {
+      return <NameInputView
+        user={this.state.user}
+        updateName={this.updateName.bind(this)}
+        updateEmail={this.updateEmail.bind(this)}
+      />;
     }
 
     if (!this.state.meeting) {
       return <MeetingNameInputView
         user={this.state.user}
         events={this.state.events}
+        logout={this.logout.bind(this)}
         updateMeeting={this.updateMeeting.bind(this)}
       />;
     }

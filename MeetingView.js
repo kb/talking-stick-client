@@ -12,54 +12,72 @@ import React, {
 
 import MeetingClient from './MeetingClient'
 import RNDimmer from 'react-native-dimmer';
+import gravatar from 'react-native-gravatar';
+var {Gravatar, GravatarApi} = gravatar;
 
 import CountdownDisplay from './CountdownDisplay';
 import LoadingView from './LoadingView';
+import Colors from './Colors';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    alignSelf: 'stretch',
-    alignItems: 'center',
+    flex: 2,
   },
   mainContainer: {
     flex: 2,
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
-    alignSelf: 'stretch',
-    padding: 20,
+  },
+  toolbar: {
+    marginTop: 20,
+    flexDirection: 'row',
+  },
+  titleContainer: {
+    flexDirection: 'column',
+    flex: 2,
+    alignItems: 'center',
   },
   title: {
     fontSize: 24,
-  },
-  subTitle: {
-    fontWeight: 'bold',
-    fontSize: 18,
+    color: Colors.TEXT,
   },
   backButton: {
-    padding: 15,
+    marginLeft: 10,
+  },
+  text: {
+    color: Colors.TEXT,
+  },
+  speaker: {
+    flexDirection: 'row',
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  roundedProfileImage: {
+    width: 50,
+    height: 50,
+    borderWidth: 1,
+    borderColor: Colors.GRAY,
+    borderRadius: 25,
+    marginRight: 10,
   },
   bottomContainer: {
+    backgroundColor: Colors.GRAY,
     padding: 20,
     alignSelf: 'stretch',
     alignItems: 'center',
   },
   moderatorMenuContainer: {
     flex: 1,
-    padding: 10,
-    paddingBottom: 20,
     alignSelf: 'stretch',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#ccc',
+    backgroundColor: Colors.GRAY,
   },
   moderatorButton: {
     padding: 15,
     alignItems: 'center',
-    alignSelf: 'stretch',
+    alignSelf: 'stretch'
   },
 });
 
@@ -165,29 +183,38 @@ export default class MeetingView extends Component {
     }
 
     const isUserSpeaker = this.state.meeting.speaker && this.state.meeting.speaker.id == this.props.user.id;
-    const backgroundColor = isUserSpeaker ? 'green' : undefined;
+    const backgroundColor = isUserSpeaker ? Colors.GREEN : Colors.RED;
 
     return (
       <View style={[styles.container, {backgroundColor}]}>
-        <TouchableWithoutFeedback onPress={this.whenViewTapped.bind(this)}>
-          <View style={styles.mainContainer}>
+        <View>
+          <View style={styles.toolbar}>
             <TouchableHighlight style={styles.backButton} onPress={this.whenBackButtonPressed.bind(this)}>
-              <Text>
+              <Text style={styles.text}>
                 Back
               </Text>
             </TouchableHighlight>
+          </View>
+          <View style={styles.titleContainer}>
             <Text style={styles.title}>{this.props.meeting.title}</Text>
             {this.maybeRenderCountdown()}
+          </View>
+        </View>
+
+        <TouchableWithoutFeedback onPress={this.whenViewTapped.bind(this)}>
+          <View style={styles.mainContainer} >
             {this.maybeRenderCurrentSpeaker()}
             {this.maybeRenderNextSpeaker()}
             {this.maybeRenderQueuePosition()}
           </View>
         </TouchableWithoutFeedback>
 
-        {this.maybeRenderModeratorMenu()}
-        <TouchableHighlight style={styles.bottomContainer} onPress={this.whenModeratorButtonPressed.bind(this)}>
-          <Text>{moderatorButtonText}</Text>
-        </TouchableHighlight>
+        <View>
+          {this.maybeRenderModeratorMenu()}
+          <TouchableHighlight style={styles.bottomContainer} onPress={this.whenModeratorButtonPressed.bind(this)}>
+            <Text style={styles.text}>{moderatorButtonText}</Text>
+          </TouchableHighlight>
+        </View>
       </View>
     );
   }
@@ -206,7 +233,16 @@ export default class MeetingView extends Component {
       return undefined;
     }
 
-    return <Text>Speaker: {currentSpeaker.name}</Text>;
+    return <View style={styles.speaker}>
+      <Gravatar options={{
+        email: this.props.user.email,
+        parameters: { "size": "200", "d": "mm" },
+        secure: true
+        }}
+        style={styles.roundedProfileImage}
+      />
+      <Text style={styles.text}>{currentSpeaker.name} (Current Speaker)</Text>
+    </View>;
   }
 
   maybeRenderNextSpeaker() {
@@ -215,7 +251,7 @@ export default class MeetingView extends Component {
       return undefined;
     }
 
-    return <Text>Next Speaker: {nextSpeaker.name}</Text>;
+    return <Text style={styles.text}>Next Speaker: {nextSpeaker.name}</Text>;
   }
 
 
@@ -225,7 +261,7 @@ export default class MeetingView extends Component {
       return undefined;
     }
 
-    return <Text>There are {queueIndex} speakers ahead of you</Text>;
+    return <Text style={styles.text}>There are {queueIndex} speakers ahead of you</Text>;
   }
 
   maybeRenderModeratorMenu() {
@@ -234,12 +270,11 @@ export default class MeetingView extends Component {
     }
 
     return <View style={styles.moderatorMenuContainer}>
-      <Text style={styles.subTitle}>Moderator Menu</Text>
         <TouchableHighlight style={styles.moderatorButton} onPress={this.whenStopModeratingButtonPressed.bind(this)}>
-          <Text>Stop Moderating</Text>
+          <Text style={styles.text}>Stop Moderating</Text>
         </TouchableHighlight>
         <TouchableHighlight style={styles.moderatorButton} onPress={this.whenResetQueueButtonPressed.bind(this)}>
-          <Text>Reset Queue</Text>
+          <Text style={styles.text}>Reset Queue</Text>
         </TouchableHighlight>
     </View>
   }

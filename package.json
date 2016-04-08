@@ -12,6 +12,7 @@
     "react-native-calendar-events": "^0.1.4",
     "react-native-dimmer": "yadi-social/react-native-dimmer",
     "react-native-fabric-digits": "kb/react-native-fabric-digits",
+    "react-native-gravatar": "0.0.4",
     "react-timer-mixin": "^0.13.3"
   }
 }

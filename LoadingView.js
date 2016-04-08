@@ -5,6 +5,8 @@ import React, {
   View,
 } from 'react-native';
 
+import Colors from './Colors';
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -12,9 +14,11 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     padding: 20,
+    backgroundColor: Colors.GRAY,
   },
   title: {
     fontSize: 24,
+    color: Colors.TEXT,
   },
 });
 

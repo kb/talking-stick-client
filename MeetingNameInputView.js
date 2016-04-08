@@ -8,20 +8,31 @@ import React, {
   View,
 } from 'react-native';
 
+import Colors from './Colors';
+
 const styles =  StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 2,
     flexDirection: 'column',
     justifyContent: 'flex-start',
     alignItems: 'center',
     padding: 30,
+    backgroundColor: Colors.GRAY,
+  },
+  calendarList: {
+    flex: 2,
+  },
+  text: {
+    color: Colors.TEXT,
   },
   subTitle: {
     fontWeight: 'bold',
     fontSize: 18,
+    color: Colors.TEXT,
   },
   title: {
     fontSize: 24,
+    color: Colors.TEXT,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -60,7 +71,7 @@ export default class MeetingNameInputView extends Component {
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      dataSource: this.state.dataSource.cloneWithRows(nextPropsevents),
+      dataSource: this.state.dataSource.cloneWithRows(nextProps.events),
     });
   }
 
@@ -70,11 +81,16 @@ export default class MeetingNameInputView extends Component {
     }
   }
 
+  whenLogoutButtonPressed() {
+    this.props.logout();
+  }
+
   render() {
     const nextButtonDisabled = this.state.nameText === '';
     const buttonTextStyle = {
       fontSize: 20,
-      color: 'black',
+      color: Colors.TEXT,
+
     };
     if (nextButtonDisabled) {
       buttonTextStyle.color = 'gray';
@@ -96,18 +112,32 @@ export default class MeetingNameInputView extends Component {
           </TouchableHighlight>
         </View>
 
-        <Text style={styles.subTitle}>Calendar Events</Text>
-        <ListView
-          dataSource={this.state.dataSource}
-          renderRow={this.renderCalendarEventRow.bind(this)}
-        />
-    </View>
+        {this.maybeRenderCalendarListView()}
+
+        <TouchableHighlight onPress={this.whenLogoutButtonPressed.bind(this)}>
+          <Text style={styles.text}>Logout</Text>
+        </TouchableHighlight>
+      </View>
     );
   }
 
   renderCalendarEventRow(event) {
     return <TouchableHighlight style={styles.eventListRow} onPress={this.props.updateMeeting.bind(this, event)}>
-      <Text>{event.title}</Text>
+      <Text style={styles.text}>{event.title}</Text>
     </TouchableHighlight>;
+  }
+
+  maybeRenderCalendarListView() {
+    if (this.state.dataSource.getRowCount() == 0) {
+      return undefined;
+    }
+
+    return <View style={styles.calendarList}>
+      <Text style={styles.subTitle}>Calendar Events</Text>
+      <ListView
+        dataSource={this.state.dataSource}
+        renderRow={this.renderCalendarEventRow.bind(this)}
+      />
+    </View>;
   }
 }
