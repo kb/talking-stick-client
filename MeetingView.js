@@ -233,9 +233,11 @@ export default class MeetingView extends Component {
       return undefined;
     }
 
+    const speakerEmail = currentSpeaker ? currentSpeaker.email : undefined;
+
     return <View style={styles.speaker}>
       <Gravatar options={{
-        email: this.props.user.email,
+        email: speakerEmail,
         parameters: { "size": "200", "d": "mm" },
         secure: true
         }}

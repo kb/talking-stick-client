@@ -91,6 +91,9 @@ export default class BootstrapView extends React.Component {
   }
 
   updateMeeting(newMeeting) {
+    if (newMeeting) {
+      newMeeting.title = newMeeting.title.trim();
+    }
     console.log('Updating Meeting to', newMeeting);
     this.setState({meeting: newMeeting});
   }

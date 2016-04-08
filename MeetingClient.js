@@ -11,7 +11,7 @@ export default class MeetingClient {
         name: user.name,
         email: user.email,
       },
-      meeting_id: meetingName,
+      meeting_id: meetingName.toLowerCase(),
     });
 
     // construct a socket
@@ -44,8 +44,6 @@ export default class MeetingClient {
       this.channel.push("sync", meeting)
     })
     .receive("error", resp => { console.log('Unable to join', resp) });
-
-
 
     // add some channel-level event handlers
     this.channel.onError(event => console.log('Channel error'));
