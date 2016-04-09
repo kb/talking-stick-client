@@ -32,6 +32,7 @@
 		B187085B1CB56819008FAACD /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B187085A1CB56819008FAACD /* EventKit.framework */; };
 		F95F0A201CB69A7C00D67F6C /* ios in Resources */ = {isa = PBXBuildFile; fileRef = F95F0A1F1CB69A7C00D67F6C /* ios */; };
 		F95F0A2E1CB69A8800D67F6C /* RNDimmer.m in Sources */ = {isa = PBXBuildFile; fileRef = F95F0A2D1CB69A8800D67F6C /* RNDimmer.m */; };
+		F992E9651CB8674500856176 /* libReactNativeDiscovery.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F992E9641CB8672500856176 /* libReactNativeDiscovery.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -126,6 +127,13 @@
 			remoteGlobalIDString = BEC43C6A1C723089001221C6;
 			remoteInfo = RNCalendarEvents;
 		};
+		F992E9631CB8672500856176 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F992E95F1CB8672500856176 /* ReactNativeDiscovery.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = ReactNativeDiscovery;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -160,6 +168,7 @@
 		B187085A1CB56819008FAACD /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		F95F0A1F1CB69A7C00D67F6C /* ios */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ios; path = "../node_modules/react-native-dimmer/ios"; sourceTree = "<group>"; };
 		F95F0A2D1CB69A8800D67F6C /* RNDimmer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RNDimmer.m; path = "../node_modules/react-native-dimmer/ios/RNDimmer.m"; sourceTree = "<group>"; };
+		F992E95F1CB8672500856176 /* ReactNativeDiscovery.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ReactNativeDiscovery.xcodeproj; path = "../node_modules/react-native-discovery/ReactNativeDiscovery.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +183,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F992E9651CB8674500856176 /* libReactNativeDiscovery.a in Frameworks */,
 				B17F215C1CB57C9F00E44D02 /* libRNCalendarEvents.a in Frameworks */,
 				B187085B1CB56819008FAACD /* EventKit.framework in Frameworks */,
 				27F22CE81C8DAA9C006E903A /* libRCTDigitsManager.a in Frameworks */,
@@ -311,6 +321,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				F992E95F1CB8672500856176 /* ReactNativeDiscovery.xcodeproj */,
 				F95F0A1F1CB69A7C00D67F6C /* ios */,
 				B17F21561CB57C9600E44D02 /* RNCalendarEvents.xcodeproj */,
 				27F22CE21C8DAA5A006E903A /* RCTDigitsManager.xcodeproj */,
@@ -339,13 +350,13 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				B11618F81CB6AF1800C1FB95 /* Crashlytics.framework */,
-				F95F0A2D1CB69A8800D67F6C /* RNDimmer.m */,
-				B187085A1CB56819008FAACD /* EventKit.framework */,
 				13B07FAE1A68108700A75B9A /* TalkingStickClient */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* TalkingStickClientTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
+				F95F0A2D1CB69A8800D67F6C /* RNDimmer.m */,
+				B187085A1CB56819008FAACD /* EventKit.framework */,
+				B11618F81CB6AF1800C1FB95 /* Crashlytics.framework */,
 				27F22CDA1C8D1D93006E903A /* Fabric.framework */,
 				27F22CDB1C8D1D93006E903A /* DigitsKit.framework */,
 				27F22CDC1C8D1D93006E903A /* DigitsKitResources.bundle */,
@@ -368,6 +379,14 @@
 			isa = PBXGroup;
 			children = (
 				B17F215B1CB57C9600E44D02 /* libRNCalendarEvents.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F992E9601CB8672500856176 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F992E9641CB8672500856176 /* libReactNativeDiscovery.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -487,6 +506,10 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
+					ProductGroup = F992E9601CB8672500856176 /* Products */;
+					ProjectRef = F992E95F1CB8672500856176 /* ReactNativeDiscovery.xcodeproj */;
+				},
+				{
 					ProductGroup = B17F21571CB57C9600E44D02 /* Products */;
 					ProjectRef = B17F21561CB57C9600E44D02 /* RNCalendarEvents.xcodeproj */;
 				},
@@ -582,6 +605,13 @@
 			fileType = archive.ar;
 			path = libRNCalendarEvents.a;
 			remoteRef = B17F215A1CB57C9600E44D02 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F992E9641CB8672500856176 /* libReactNativeDiscovery.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libReactNativeDiscovery.a;
+			remoteRef = F992E9631CB8672500856176 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

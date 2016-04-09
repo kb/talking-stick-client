@@ -10,6 +10,9 @@ import React, {
 
 import Colors from './Colors';
 
+const {DeviceEventEmitter} = require('react-native');
+const Discovery = require('react-native-discovery');
+
 const styles =  StyleSheet.create({
   container: {
     flex: 2,
@@ -67,6 +70,26 @@ export default class MeetingNameInputView extends Component {
       nameText: '',
       dataSource: dataSource.cloneWithRows(props.events),
     };
+
+    // Initialize the Discovery object with a UUID specific for the app
+    // and a user specific value for the device
+    Discovery.initialize(
+      "3E1180E5-222E-43E9-98B4-E6C0DD18E728",
+      this.props.user.id,
+    );
+
+    // TODO add a method to stop this
+    Discovery.setShouldAdvertise(true);
+    Discovery.setShouldDiscover(true);
+
+    // Listen for discovery changes
+    DeviceEventEmitter.addListener(
+      'discoveredUsers',
+      (data) => {
+        if (data.didChange || data.usersChanged) //slight callback discrepancy between the iOS and Android libraries
+        console.log(data.users)
+      }
+    );
   }
 
   componentWillReceiveProps(nextProps) {
