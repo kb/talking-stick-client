@@ -114,7 +114,6 @@ export default class MeetingView extends Component {
       }
     );
   }
-  }
 
   componentWillMount() {
     // Disable dimmer (so the screen will stay on)
